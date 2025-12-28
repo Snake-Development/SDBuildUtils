@@ -1,0 +1,114 @@
+package org.killersnake.sdbuildutils.utils;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitScheduler;
+import org.killersnake.sdbuildutils.SDBuildUtils;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+public class Selection {
+	private Location pos1;
+	private Location pos2;
+
+	private final BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
+
+	public static Selection start(Location pos1) {
+		return new Selection(pos1, null);
+	}
+
+	public static Selection end(Selection sel, Location pos2) {
+		return new Selection(sel.getPos1(), pos2);
+	}
+
+	public void fillSelection(Player player, BlockState blockState, long delayPerBlock) {
+		SDBuildUtils plugin = (SDBuildUtils) Bukkit.getPluginManager().getPlugin("SDBuildUtils");
+		World world = pos1.getWorld();
+
+		if (world == null || !world.equals(pos2.getWorld())) {
+			Utils.messagePlayer(
+					player.getName(),
+					"Error trying to fill the selection [%s]".formatted(this.toString())
+			);
+		};
+
+		int minX = Math.min(pos1.getBlockX(), pos2.getBlockX());
+		int maxX = Math.max(pos1.getBlockX(), pos2.getBlockX());
+		int minY = Math.min(pos1.getBlockY(), pos2.getBlockY());
+		int maxY = Math.max(pos1.getBlockY(), pos2.getBlockY());
+		int minZ = Math.min(pos1.getBlockZ(), pos2.getBlockZ());
+		int maxZ = Math.max(pos1.getBlockZ(), pos2.getBlockZ());
+
+		//TODO: make the placement look like a simple animation (place x -> Z -> Y
+		//TODO: make it take the items from inventory of player
+			//TODO: ignore inventory if player has a specific permission (future feature)
+
+		List<Block> blocks = new ArrayList<>();
+
+		for (int y = minY; y <= maxY; y++) {
+			for (int z = minZ; z <= maxZ; z++) {
+				for (int x = minX; x <= maxX; x++) {
+					blocks.add(world.getBlockAt(x, y, z));
+				}
+			}
+		}
+
+		Iterator<Block> iterator = blocks.iterator();
+
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				if (!iterator.hasNext()) {
+					cancel();
+					return;
+				}
+				Block block = iterator.next();
+				block.setBlockData(blockState.getBlockData(), true);
+			}
+		}.runTaskTimer(plugin, 0L, (0 < delayPerBlock && delayPerBlock < 5) ? delayPerBlock : 5 );
+
+		Utils.messagePlayer(
+				player.getName(),
+				"Finished filling %s [%s]".formatted(
+						blockState.getType().toString(),
+						this.toString()
+				)
+		);
+	}
+
+	public Selection end(Location pos2) {
+		return new Selection(pos1, pos2);
+	}
+
+	public Selection(Location pos1, Location pos2) {
+		this.pos1 = pos1;
+		this.pos2 = pos2;
+	}
+
+	public Location getPos1() {
+		return pos1;
+	}
+
+	public Location getPos2() {
+		return pos2;
+	}
+
+	public boolean isComplete() {
+		return pos1 != null && pos2 != null;
+	}
+
+	@Override
+	public String toString() {
+		return "from (%.2f, %.2f, %.2f) to (%.2f, %.2f, %.2f)".formatted(
+			pos1.x(), pos1.y(), pos1.z(),
+			pos2.x(), pos2.y(), pos2.z()
+		);
+	}
+}
