@@ -104,6 +104,67 @@ public class Selection {
 		return pos1 != null && pos2 != null;
 	}
 
+	public static enum ResizeFace {
+		TOP,    // +Y
+		BOTTOM, // -Y
+		EAST,   // +X
+		WEST,   // -X
+		SOUTH,  // +Z
+		NORTH   // -Z
+	}
+	public static enum ResizeOperation {
+		INCREASE,
+		DECREASE
+	}
+
+	public Selection resize(ResizeFace resizeFace, ResizeOperation resizeOperation, int amount) {
+		int signedAmount = (resizeOperation == ResizeOperation.DECREASE) ? -amount : amount;
+		Location p1 = pos1.clone();
+		Location p2 = pos2.clone();
+		switch (resizeFace) {
+			case TOP -> {
+				if (isPos1Top()) { p1.add(0, signedAmount, 0); } else { p2.add(0, signedAmount, 0); }
+			}
+			case BOTTOM -> {
+				if (isPos1Bottom()) { p1.subtract(0, signedAmount, 0); } else { p2.subtract(0, signedAmount, 0); }
+			}
+			case EAST -> {
+				if (isPos1East()) { p1.add(signedAmount, 0, 0); } else { p2.add(signedAmount, 0, 0); }
+			}
+			case WEST -> {
+				if (isPos1West()) { p1.subtract(signedAmount, 0, 0); } else { p2.subtract(signedAmount, 0, 0); }
+			}
+			case SOUTH -> {
+				if (isPos1South()) { p1.add(0, 0, signedAmount); } else { p2.add(0, 0, signedAmount); }
+			}
+			case NORTH -> {
+				if (isPos1North()) { p1.subtract(0, 0, signedAmount); } else { p2.subtract(0, 0, signedAmount); }
+			}
+		}
+		return new Selection(p1, p2);
+	}
+
+	//<editor-fold desc="private position checking methods">
+	private boolean isPos1Top() {
+		return pos1.y() > pos2.y();
+	}
+	private boolean isPos1Bottom() {
+		return pos1.y() < pos2.y();
+	}
+	private boolean isPos1East() {
+		return pos1.x() > pos2.x();
+	}
+	private boolean isPos1West() {
+		return pos1.x() < pos2.x();
+	}
+	private boolean isPos1South() {
+		return pos1.z() > pos2.z();
+	}
+	private boolean isPos1North() {
+		return pos1.z() < pos2.z();
+	}
+	//</editor-fold>
+
 	@Override
 	public String toString() {
 		return "from (%.2f, %.2f, %.2f) to (%.2f, %.2f, %.2f)".formatted(
