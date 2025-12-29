@@ -120,7 +120,13 @@ public class Selection {
 		DECREASE
 	}
 
-	public Selection resize(ResizeFace resizeFace, ResizeOperation resizeOperation, int amount) {
+	public static record SelectionResizeContext(ResizeFace resizeFace, ResizeOperation resizeOperation, int amount) {}
+
+	public Selection resize(SelectionResizeContext selectionResizeContext) {
+		ResizeOperation resizeOperation = selectionResizeContext.resizeOperation();
+		ResizeFace resizeFace = selectionResizeContext.resizeFace();
+		int amount = selectionResizeContext.amount();
+
 		int signedAmount = (resizeOperation == ResizeOperation.DECREASE) ? -amount : amount;
 		Location p1 = pos1.clone();
 		Location p2 = pos2.clone();
@@ -147,7 +153,7 @@ public class Selection {
 		return new Selection(p1, p2);
 	}
 
-	//<editor-fold desc="private position checking methods">
+	//<editor-fold desc="position checking methods">
 	private boolean isPos1Top() {
 		return pos1.y() > pos2.y();
 	}
