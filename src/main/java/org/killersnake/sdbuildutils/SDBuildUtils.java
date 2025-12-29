@@ -71,6 +71,27 @@ public final class SDBuildUtils extends JavaPlugin {
 											"Cancelled the selection"
 									);
 									selectionManager.reset((Player) sender);
+								}),
+						new CommandAPICommand("resize")
+								.withArguments(
+										new StringArgument("face"),      //TODO: change to Selection.ResizeFace (MultiLiteralArgument)
+										new StringArgument("operation"), //TODO: change to Selection.ResizeOperation (MultiLiteralArgument)
+										new IntegerArgument("amount")    //TODO: restrict the range to limited blocks (new IntegerArgument("amount", min, max))
+								)
+								.executes((sender, args) -> {
+									ResizeFace face = ResizeFace.valueOf((String) args.get("face"));
+									ResizeOperation operation = ResizeOperation.valueOf((String) args.get("operation"));
+									int amount = (int) args.get("amount");
+
+									selectionManager.resize((Player) sender, face, operation, amount);
+
+									Utils.messagePlayer(
+											sender.getName(),
+											"Resized selection at face %s by %d blocks".formatted(
+													face.toString(),
+													(operation == ResizeOperation.DECREASE) ? -amount : amount
+											)
+									);
 								})
 				)
 				.register(this);
