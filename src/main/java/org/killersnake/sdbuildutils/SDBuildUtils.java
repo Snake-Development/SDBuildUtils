@@ -74,9 +74,9 @@ public final class SDBuildUtils extends JavaPlugin {
 								}),
 						new CommandAPICommand("resize")
 								.withArguments(
-										new StringArgument("face"),      //TODO: change to Selection.ResizeFace (MultiLiteralArgument)
-										new StringArgument("operation"), //TODO: change to Selection.ResizeOperation (MultiLiteralArgument)
-										new IntegerArgument("amount")    //TODO: restrict the range to limited blocks (new IntegerArgument("amount", min, max))
+										new MultiLiteralArgument("face", Arrays.stream(ResizeFace.values()).map(face -> face.toString().toLowerCase()).toArray(String[]::new)),
+										new MultiLiteralArgument("operation", Arrays.stream(ResizeOperation.values()).map(op -> op.toString().toLowerCase()).toArray(String[]::new)),
+										new IntegerArgument("amount", 1, 8)
 								)
 								.executes((sender, args) -> {
 									ResizeFace face = ResizeFace.valueOf((String) args.get("face"));
