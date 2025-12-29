@@ -3,7 +3,7 @@ SDBuildUtils is a minecraft server plugin by [Snake Development](https://github.
 
 ## Installation
 
-Go to the `Releases` tab and download the `SDBuildUtils.jar' file from latest release.
+Go to the `Releases` tab and download the `SDBuildUtils.jar` file from latest release.
 
 ## Usage
 
