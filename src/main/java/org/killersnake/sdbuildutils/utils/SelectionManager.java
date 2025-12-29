@@ -91,11 +91,13 @@ public class SelectionManager {
 	public void resize(Player player, Selection.SelectionResizeContext selectionResizeContext) {
 		Selection oldSelection = selections.get(player.getUniqueId());
 		reset(player);
+		Selection newSelection = oldSelection.resize(selectionResizeContext);
 		selections.put(
 				player.getUniqueId(),
-				oldSelection
-						.resize(selectionResizeContext)
+				newSelection
 		);
+		this.task_particle_start_sel = scheduler.runTaskTimer(plugin, new PersistentParticleTask(plugin, newSelection.getPos1(), player), 10, 10);
+		this.task_particle_end_sel = scheduler.runTaskTimer(plugin, new PersistentParticleTask(plugin, newSelection.getPos2(), player), 10, 10);
 	}
 
 	public @Nullable Selection getSelection(Player player) {
