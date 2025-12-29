@@ -14,6 +14,7 @@ import org.killersnake.sdbuildutils.listeners.PlayerSelectionListener;
 import org.killersnake.sdbuildutils.utils.Selection;
 import org.killersnake.sdbuildutils.utils.Selection.ResizeFace;
 import org.killersnake.sdbuildutils.utils.Selection.ResizeOperation;
+import org.killersnake.sdbuildutils.utils.Selection.SelectionResizeContext;
 import org.killersnake.sdbuildutils.utils.SelectionManager;
 import org.killersnake.sdbuildutils.utils.Utils;
 
@@ -82,11 +83,11 @@ public final class SDBuildUtils extends JavaPlugin {
 										new IntegerArgument("amount", 1, 8)
 								)
 								.executes((sender, args) -> {
-									ResizeFace face = ResizeFace.valueOf((String) args.get("face"));
-									ResizeOperation operation = ResizeOperation.valueOf((String) args.get("operation"));
+									ResizeFace face = ResizeFace.valueOf(((String) args.get("face")).toUpperCase());
+									ResizeOperation operation = ResizeOperation.valueOf(((String) args.get("operation")).toUpperCase());
 									int amount = (int) args.get("amount");
 
-									selectionManager.resize((Player) sender, face, operation, amount);
+									selectionManager.resize((Player) sender, new SelectionResizeContext(face, operation, amount));
 
 									Utils.messagePlayer(
 											sender.getName(),
