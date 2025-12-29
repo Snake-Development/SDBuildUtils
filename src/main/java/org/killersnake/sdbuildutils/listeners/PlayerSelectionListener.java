@@ -15,7 +15,7 @@ public class PlayerSelectionListener implements Listener {
 		Player player = event.getPlayer();
 		Location location = event.getLocation();
 
-		Utils.messagePlayer(player.getName(), "Selection started at (%.2f %.2f %.2f)".formatted(location.x(), location.y(), location.z()));
+		Utils.messagePlayer(player.getName(), "Selection started at (%.1f %.1f %.1f)".formatted(location.x(), location.y(), location.z()));
 	}
 
 	@EventHandler
@@ -23,6 +23,6 @@ public class PlayerSelectionListener implements Listener {
 		Player player = event.getPlayer();
 		Location location = event.getLocation();
 
-		Utils.messagePlayer(player.getName(), "Selection ended at (%.2f %.2f %.2f)".formatted(location.x(), location.y(), location.z()));
+		Utils.messagePlayer(player.getName(), "Selection ended at (%.1f %.1f %.1f)".formatted(location.x(), location.y(), location.z()));
 	}
 }
