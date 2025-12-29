@@ -1,9 +1,9 @@
 name: SDBuildUtils
 version: '1.0-SNAPSHOT'
-main: org.killersnake.SDBuildUtils.SDBuildUtils
+main: org.killersnake.sdbuildutils.SDBuildUtils
 api-version: '1.21'
 prefix: SDBuildUtils
 load: STARTUP
 authors: [ killersnake ]
 depend: [ CommandAPI ]
-description: Build Utility Plugin for Blood & War
+description: Build Utility Plugin by Snake Development
