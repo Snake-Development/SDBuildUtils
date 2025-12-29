@@ -74,13 +74,17 @@ public class Selection {
 			}
 		}.runTaskTimer(plugin, 0L, (0 < delayPerBlock && delayPerBlock < 5) ? delayPerBlock : 5 );
 
-		Utils.messagePlayer(
-				player.getName(),
-				"Finished filling %s [%s]".formatted(
-						blockState.getType().toString(),
-						this.toString()
-				)
-		);
+		String finishMessage = "Finished filling %s [%s]".formatted(blockState.getType().toString(), this.toString());
+
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				Utils.messagePlayer(
+						player.getName(),
+						finishMessage
+				);
+			}
+		}.runTaskLater(plugin, blocks.toArray().length * delayPerBlock);
 	}
 
 	public Selection end(Location pos2) {
