@@ -8,11 +8,14 @@ import org.killersnake.sdbuildutils.SDBuildUtils;
 import org.killersnake.sdbuildutils.events.PlayerEndSelectionEvent;
 import org.killersnake.sdbuildutils.events.PlayerStartSelectionEvent;
 import org.killersnake.sdbuildutils.tasks.PersistentParticleTask;
+import org.killersnake.sdbuildutils.utils.Selection.ResizeFace;
+import org.killersnake.sdbuildutils.utils.Selection.ResizeOperation;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.UUID;
 
+//TODO: remove particle logic and move to using player.sendBlockUpdate() inside the SelectionClass
 public class SelectionManager {
 
 	private final HashMap<UUID, Selection> selections = new HashMap<>();
@@ -31,38 +34,40 @@ public class SelectionManager {
 			if (!selections.get(player.getUniqueId()).isComplete()) {
 				end(player);
 			} else {
-				start(player);
+				start(player, true);
 			}
 		} else {
-			start(player);
+			start(player, true);
 		}
 	}
 
-	public void start(Player player) {
+	public void start(Player player, boolean previousRemoveMessage) {
 		if (selections.containsKey(player.getUniqueId())) {
 			selections.remove(player.getUniqueId());
-			Utils.messagePlayer(player.getName(), "Removed previous selection");
+			if (previousRemoveMessage) {
+				Utils.messagePlayer(player.getName(), "Removed previous selection");
+			}
 		}
-		selections.put(player.getUniqueId(), Selection.start(player.getLocation().toBlockLocation()));
+		selections.put(player.getUniqueId(), Selection.start(player.getLocation().toCenterLocation()));
 
 		Bukkit.getPluginManager().callEvent(
-				new PlayerStartSelectionEvent(player, player.getLocation().toBlockLocation())
+				new PlayerStartSelectionEvent(player, player.getLocation().toCenterLocation())
 		);
 
 		this.resetParticles();
 
-		this.task_particle_start_sel = scheduler.runTaskTimer(plugin, new PersistentParticleTask(plugin, player.getLocation().toBlockLocation(), player), 10, 10);
+		this.task_particle_start_sel = scheduler.runTaskTimer(plugin, new PersistentParticleTask(plugin, player.getLocation().toCenterLocation(), player), 10, 10);
 	}
 
 	public void end(Player player) {
-		Selection sel = selections.get(player.getUniqueId()).end(player.getLocation().toBlockLocation());
+		Selection sel = selections.get(player.getUniqueId()).end(player.getLocation().toCenterLocation());
 		selections.put(player.getUniqueId(), sel);
 
 		Bukkit.getPluginManager().callEvent(
-				new PlayerEndSelectionEvent(player, player.getLocation().toBlockLocation())
+				new PlayerEndSelectionEvent(player, player.getLocation().toCenterLocation())
 		);
 
-		this.task_particle_end_sel = scheduler.runTaskTimer(plugin, new PersistentParticleTask(plugin, player.getLocation().toBlockLocation(), player), 10, 10);
+		this.task_particle_end_sel = scheduler.runTaskTimer(plugin, new PersistentParticleTask(plugin, player.getLocation().toCenterLocation(), player), 10, 10);
 	}
 
 	public boolean isSelecting(Player player) {
@@ -80,8 +85,7 @@ public class SelectionManager {
 
 	public void reset(Player player) {
 		selections.remove(player.getUniqueId());
-
-		this.resetParticles();
+		resetParticles();
 	}
 
 	public void resize(Player player, ResizeFace resizeFace, ResizeOperation resizeOperation, int amount) {

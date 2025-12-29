@@ -4,7 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -28,7 +28,7 @@ public class Selection {
 		return new Selection(sel.getPos1(), pos2);
 	}
 
-	public void fillSelection(Player player, BlockState blockState, long delayPerBlock) {
+	public void fillSelection(Player player, BlockData blockData, long delayPerBlock) {
 		SDBuildUtils plugin = (SDBuildUtils) Bukkit.getPluginManager().getPlugin("SDBuildUtils");
 		World world = pos1.getWorld();
 
@@ -69,11 +69,11 @@ public class Selection {
 					return;
 				}
 				Block block = iterator.next();
-				block.setBlockData(blockState.getBlockData(), true);
+				block.setBlockData(blockData, true);
 			}
 		}.runTaskTimer(plugin, 0L, delayPerBlock);
 
-		String finishMessage = "Finished filling %s [%s]".formatted(blockState.getType().toString(), this.toString());
+		String finishMessage = "Finished filling %s [%s]".formatted(blockData.getMaterial().toString(), this.toString());
 
 		new BukkitRunnable() {
 			@Override
