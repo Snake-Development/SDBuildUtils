@@ -84,6 +84,17 @@ public class SelectionManager {
 		this.resetParticles();
 	}
 
+	public void resize(Player player, ResizeFace resizeFace, ResizeOperation resizeOperation, int amount) {
+		//TODO: change to Selection.SelectionResizeContext
+		Selection oldSelection = selections.get(player.getUniqueId());
+		reset(player);
+		selections.put(
+				player.getUniqueId(),
+				oldSelection
+						.resize(resizeFace, resizeOperation, amount)
+		);
+	}
+
 	public @Nullable Selection getSelection(Player player) {
 		return selections.get(player.getUniqueId());
 	}
