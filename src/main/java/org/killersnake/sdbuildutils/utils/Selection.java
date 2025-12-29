@@ -46,7 +46,6 @@ public class Selection {
 		int minZ = Math.min(pos1.getBlockZ(), pos2.getBlockZ());
 		int maxZ = Math.max(pos1.getBlockZ(), pos2.getBlockZ());
 
-		//TODO: make the placement look like a simple animation (place x -> Z -> Y
 		//TODO: make it take the items from inventory of player
 			//TODO: ignore inventory if player has a specific permission (future feature)
 
@@ -72,7 +71,7 @@ public class Selection {
 				Block block = iterator.next();
 				block.setBlockData(blockState.getBlockData(), true);
 			}
-		}.runTaskTimer(plugin, 0L, (0 < delayPerBlock && delayPerBlock < 5) ? delayPerBlock : 5 );
+		}.runTaskTimer(plugin, 0L, delayPerBlock);
 
 		String finishMessage = "Finished filling %s [%s]".formatted(blockState.getType().toString(), this.toString());
 
@@ -171,7 +170,7 @@ public class Selection {
 
 	@Override
 	public String toString() {
-		return "from (%.2f, %.2f, %.2f) to (%.2f, %.2f, %.2f)".formatted(
+		return "from (%.1f, %.1f, %.1f) to (%.1f, %1f, %.1f)".formatted(
 			pos1.x(), pos1.y(), pos1.z(),
 			pos2.x(), pos2.y(), pos2.z()
 		);
