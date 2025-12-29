@@ -43,26 +43,26 @@ public class SelectionManager {
 			selections.remove(player.getUniqueId());
 			Utils.messagePlayer(player.getName(), "Removed previous selection");
 		}
-		selections.put(player.getUniqueId(), Selection.start(player.getLocation()));
+		selections.put(player.getUniqueId(), Selection.start(player.getLocation().toBlockLocation()));
 
 		Bukkit.getPluginManager().callEvent(
-				new PlayerStartSelectionEvent(player, player.getLocation())
+				new PlayerStartSelectionEvent(player, player.getLocation().toBlockLocation())
 		);
 
 		this.resetParticles();
 
-		this.task_particle_start_sel = scheduler.runTaskTimer(plugin, new PersistentParticleTask(plugin, player.getLocation(), player), 10, 10);
+		this.task_particle_start_sel = scheduler.runTaskTimer(plugin, new PersistentParticleTask(plugin, player.getLocation().toBlockLocation(), player), 10, 10);
 	}
 
 	public void end(Player player) {
-		Selection sel = selections.get(player.getUniqueId()).end(player.getLocation());
+		Selection sel = selections.get(player.getUniqueId()).end(player.getLocation().toBlockLocation());
 		selections.put(player.getUniqueId(), sel);
 
 		Bukkit.getPluginManager().callEvent(
-				new PlayerEndSelectionEvent(player, player.getLocation())
+				new PlayerEndSelectionEvent(player, player.getLocation().toBlockLocation())
 		);
 
-		this.task_particle_end_sel = scheduler.runTaskTimer(plugin, new PersistentParticleTask(plugin, player.getLocation(), player), 10, 10);
+		this.task_particle_end_sel = scheduler.runTaskTimer(plugin, new PersistentParticleTask(plugin, player.getLocation().toBlockLocation(), player), 10, 10);
 	}
 
 	public boolean isSelecting(Player player) {
